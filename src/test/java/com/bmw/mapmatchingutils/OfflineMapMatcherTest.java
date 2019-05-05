@@ -113,21 +113,13 @@ public class OfflineMapMatcherTest {
         gpsList.add(gps4);
         gpsList.add(gps5);
         //¼ÆËã´¹×ãµã
-        List<RoadPosition> list = location2road(gps1, roadData);
-        roadPointList.add(list);
-        candidateMap.put(gps1, list);
-        list = location2road(gps2, roadData);
-        roadPointList.add(list);
-        candidateMap.put(gps2, list);
-        list = location2road(gps3, roadData);
-        roadPointList.add(list);
-        candidateMap.put(gps3, list);
-        list = location2road(gps4, roadData);
-        roadPointList.add(list);
-        candidateMap.put(gps4, list);
-        list = location2road(gps5, roadData);
-        roadPointList.add(list);
-        candidateMap.put(gps5, list);
+        List<RoadPosition> list;
+        for (GpsMeasurement gps : gpsList) {
+            list = location2road(gps, roadData);
+            roadPointList.add(list);
+            candidateMap.put(gps, list);
+        }
+
 
 
 //        List<RoadPosition> roadPositions = new ArrayList<>();
@@ -176,8 +168,7 @@ public class OfflineMapMatcherTest {
     private static void computeDistance(List<RoadPosition> prePositions, List<RoadPosition> nextPositions) {
         for (RoadPosition prePosition : prePositions) {
             for (RoadPosition nextPosition : nextPositions) {
-                double distance = computeDistance(prePosition, nextPosition);
-                addRouteLength(prePosition, nextPosition, distance);
+                addRouteLength(prePosition, nextPosition, computeDistance(prePosition, nextPosition));
             }
         }
     }
@@ -205,7 +196,7 @@ public class OfflineMapMatcherTest {
     }
 
     private static Date seconds(int seconds) {
-        Calendar c = new GregorianCalendar(2014, 1, 1);
+        Calendar c = new GregorianCalendar(2019, 1, 1);
         c.add(Calendar.SECOND, seconds);
         return c.getTime();
     }
@@ -307,12 +298,11 @@ public class OfflineMapMatcherTest {
 
     @Test
     public void testMapMatching() {
-        final List<GpsMeasurement> gpsMeasurements = Arrays.asList(gps1, gps2, gps3, gps4);
 
         ViterbiAlgorithm<RoadPosition, GpsMeasurement, RoadPath> viterbi =
                 new ViterbiAlgorithm<>();
         TimeStep<RoadPosition, GpsMeasurement, RoadPath> prevTimeStep = null;
-        for (GpsMeasurement gpsMeasurement : gpsMeasurements) {
+        for (GpsMeasurement gpsMeasurement : gpsList) {
             final Collection<RoadPosition> candidates = computeCandidates(gpsMeasurement);
             final TimeStep<RoadPosition, GpsMeasurement, RoadPath> timeStep =
                     new TimeStep<>(gpsMeasurement, candidates);
@@ -352,6 +342,11 @@ public class OfflineMapMatcherTest {
         Foot_Data goal2 = new Foot_Data(1.0, 8.5, 0.0, new Road_Data(1, 8.05, 1, 10));
         aStar.init(start, goal2);
         System.out.println(aStar.getDistance());
+    }
+
+    @Test
+    public void mavenAstar(){
+
     }
 
 
