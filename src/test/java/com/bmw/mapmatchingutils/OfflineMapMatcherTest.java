@@ -22,7 +22,6 @@ import com.bmw.hmm.Transition;
 import com.bmw.hmm.ViterbiAlgorithm;
 import com.bmw.mapmatchingutils.astar.*;
 import com.bmw.mapmatchingutils.astar.beans.Foot_Data;
-import com.bmw.mapmatchingutils.astar.beans.Location_Data;
 import com.bmw.mapmatchingutils.astar.beans.PointData;
 import com.bmw.mapmatchingutils.astar.beans.Road_Data;
 import org.junit.BeforeClass;
@@ -69,12 +68,18 @@ public class OfflineMapMatcherTest {
 //    private final static GpsMeasurement gps2 = new GpsMeasurement(seconds(1), 30, 20);
 //    private final static GpsMeasurement gps3 = new GpsMeasurement(seconds(2), 30, 40);
 //    private final static GpsMeasurement gps4 = new GpsMeasurement(seconds(3), 10, 70);
-
-    private final static GpsMeasurement gps1 = new GpsMeasurement(seconds(0), 1.5, 3.5);
-    private final static GpsMeasurement gps2 = new GpsMeasurement(seconds(1), 3.0, 3.0);
-    private final static GpsMeasurement gps3 = new GpsMeasurement(seconds(2), 3.5, 6.7);
-    private final static GpsMeasurement gps4 = new GpsMeasurement(seconds(3), 4.2, 8.2);
-    private final static GpsMeasurement gps5 = new GpsMeasurement(seconds(4), 6.0, 9.05);
+    //test1
+//    private final static GpsMeasurement gps1 = new GpsMeasurement(seconds(0), 1.5, 3.5);
+//    private final static GpsMeasurement gps2 = new GpsMeasurement(seconds(1), 3.0, 3.0);
+//    private final static GpsMeasurement gps3 = new GpsMeas urement(seconds(2), 3.5, 6.7);
+//    private final static GpsMeasurement gps4 = new GpsMeasurement(seconds(3), 4.2, 8.2);
+//    private final static GpsMeasurement gps5 = new GpsMeasurement(seconds(4), 8.0, 8.55);
+    //test2
+    private final static GpsMeasurement gps1 = new GpsMeasurement(seconds(0), 61.0120843301571, 25.9074895613654);
+    private final static GpsMeasurement gps2 = new GpsMeasurement(seconds(1), 60.6874495359214, 25.7384059463668);
+    private final static GpsMeasurement gps3 = new GpsMeasurement(seconds(2), 59.3541867181996, 24.2065205168655);
+    private final static GpsMeasurement gps4 = new GpsMeasurement(seconds(3), 59.5520476288333, 26.1042824416387);
+    private final static GpsMeasurement gps5 = new GpsMeasurement(seconds(4), 60.2403635795241, 26.2505680606862);
 
     private final static List<GpsMeasurement> gpsList = new ArrayList<>();
     private final static List<List<RoadPosition>> roadPointList = new ArrayList<>();
@@ -201,6 +206,8 @@ public class OfflineMapMatcherTest {
         return c.getTime();
     }
 
+
+
     private static void addRouteLength(RoadPosition from, RoadPosition to, double routeLength) {
         routeLengths.put(new Transition<RoadPosition>(from, to), routeLength);
     }
@@ -259,9 +266,12 @@ public class OfflineMapMatcherTest {
 
     //定点到线 直接更新location的坐标 算法复杂度 O(N*logN)
     public static List<RoadPosition> location2road(GpsMeasurement gps, Map<Road_Data, Double> roadData) {
+
+
         double x = gps.position.x;
         double y = gps.position.y;
         List<RoadPosition> FootList = new ArrayList<>();
+
         // 算法复杂度 O(N)
         for (Map.Entry<Road_Data, Double> entry : roadData.entrySet()) {
             Road_Data road_data = entry.getKey();
@@ -289,7 +299,7 @@ public class OfflineMapMatcherTest {
         }
         // 算法复杂度 O(N*logN)
         Collections.sort(FootList);
-        while (FootList.size() >= 3) {
+        while (FootList.size() > 3) {
             FootList.remove(FootList.size() - 1);
         }
         return FootList;
@@ -321,7 +331,16 @@ public class OfflineMapMatcherTest {
 
         List<SequenceState<RoadPosition, GpsMeasurement, RoadPath>> roadPositions =
                 viterbi.computeMostLikelySequence();
-
+//        System.out.println(roadPositions);
+        for (SequenceState<RoadPosition, GpsMeasurement, RoadPath> position : roadPositions) {
+//            System.out.println("observation: " + position.observation.position);
+            System.out.println("expected: " + position.state.position);
+//            if (position.transitionDescriptor != null) {
+//                System.out.print("road - ");
+//                System.out.print("from:" + position.transitionDescriptor.from.position);
+//                System.out.println("    to:" + position.transitionDescriptor.to.position);
+//            }
+        }
         assertFalse(viterbi.isBroken());
 //        List<SequenceState<RoadPosition, GpsMeasurement, RoadPath>> expected = new ArrayList<>();
 //        expected.add(new SequenceState<>(rp11, gps1, (RoadPath) null));
@@ -331,23 +350,9 @@ public class OfflineMapMatcherTest {
 //        assertEquals(expected, roadPositions);
     }
 
-    @Test
-    public void testAstra() {
-        aStar.initData(roadData, pointData);
-        Foot_Data start = new Foot_Data(1.0, 1.0, 0.0, new Road_Data(1, 0.4, 1, 3.3));
-        Foot_Data goal1 = new Foot_Data(1.0, 2.0, 0.0, new Road_Data(1, 0.4, 1, 3.3));
-        aStar.init(start, goal1);
-        System.out.println(aStar.getDistance());
 
-        Foot_Data goal2 = new Foot_Data(1.0, 8.5, 0.0, new Road_Data(1, 8.05, 1, 10));
-        aStar.init(start, goal2);
-        System.out.println(aStar.getDistance());
-    }
 
-    @Test
-    public void mavenAstar(){
 
-    }
 
 
 }

@@ -38,13 +38,16 @@ public class HmmProbabilities {
          * lengths and 60 s sampling interval but also works for other sampling intervals.
          */
         this(4.07, 0.00959442);
+//        this(4.07, 0.00759442);
     }
 
     /**
      * @param sigma standard deviation of the normal distribution [m] used for modeling the
      * GPS error
+     * increase sigma to decrease observation probability
      * @param beta beta parameter of the exponential distribution for 1 s sampling interval, used
      * for modeling transition probabilities
+     * increase beta to decrease transition  probability
      */
     public HmmProbabilities(double sigma, double beta) {
         this.sigma = sigma;

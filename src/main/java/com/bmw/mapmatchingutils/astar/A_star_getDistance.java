@@ -29,12 +29,13 @@ public class A_star_getDistance {
         init(new Foot_Data(start.position.x, start.position.y, start.distance, start.fraction, start.road_data),
                 new Foot_Data(end.position.x, end.position.y, end.distance, end.fraction, end.road_data));
     }
+    
     public void init(Foot_Data start,Foot_Data goal){
     	newMapData.clear();
         frontier.clear();
         came_from.clear();
         cost_so_far.clear();
-        frontier.add(new PointData(start.getFootx(),start.getFootx(),0.0));
+        frontier.add(new PointData(start.getFootx(),start.getFooty(),0.0));
         this.start = start;
         this.goal = goal;
         
@@ -165,11 +166,11 @@ public class A_star_getDistance {
             double mx,my,MX,MY;
             if(current.equals(goal0))
             {
-            	System.out.println("break");
+//            	System.out.println("break");
                 break;
             }
             List<PointData> neighbor = newMapData.get(current);
-            System.out.println("neighborsize = "+ neighbor.size());
+//            System.out.println("neighborsize = "+ neighbor.size());
             Iterator<PointData> iter = neighbor.iterator();
             while(iter.hasNext()) {
                 PointData next = (PointData) iter.next();
@@ -218,13 +219,14 @@ public class A_star_getDistance {
                     Math.pow(start.getFooty() - goal.getFooty(), 2));
         }
         else {List<PointData> pointData = GetPath();
-        System.out.println(pointData.toString());
+//        System.out.println(pointData.toString());
             PointData pointData0 = pointData.get(0);
             for (int i=1;i<pointData.size();i++)
             {
             	PointData pointData1 = pointData.get(i);
             	Road_Data road = new Road_Data(pointData1.getX(),pointData1.getY(),pointData0.getX(),pointData0.getY());
-                distance = distance + newRoadData.get(road);
+            	distance = distance + Math.sqrt((pointData1.getX()-pointData0.getX())*(pointData1.getX()-pointData0.getX())
+                		+(pointData1.getY()-pointData0.getY())*(pointData1.getY()-pointData0.getY()));
                 pointData0 = pointData1;
             }
         }

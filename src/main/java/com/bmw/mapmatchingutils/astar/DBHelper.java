@@ -25,7 +25,7 @@ public class DBHelper {
 			con = DriverManager.getConnection(dbURL0);
 			st = con.createStatement();
 			//???????MAC???
-			ResultSet rs = st.executeQuery("select * from ap_table_id");
+			ResultSet rs = st.executeQuery("select * from ap_table_id_old");
 			while (rs.next()) {
 				// read the result set
 				String s = "Mac_" + rs.getString("Mac").replace(":", "_");

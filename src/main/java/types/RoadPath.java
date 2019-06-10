@@ -61,6 +61,12 @@ public class RoadPath {
             return false;
         return true;
     }
-    
-    
+
+    @Override
+    public String toString() {
+        return "RoadPath{" +
+                "from=" + from.position +
+                ", to=" + to.position +
+                '}';
+    }
 }

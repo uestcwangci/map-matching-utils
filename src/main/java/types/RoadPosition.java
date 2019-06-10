@@ -73,6 +73,6 @@ public class RoadPosition implements Comparable<RoadPosition>{
 
     @Override
     public int compareTo(RoadPosition o) {
-        return Double.compare(this.fraction, o.fraction);
+        return Double.compare(this.distance, o.distance);
     }
 }
